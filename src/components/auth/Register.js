@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Grid, Form, Segment, Button, Header, Message, Icon } from "semantic-ui-react";
-import { useDispatch } from "react-redux";
-import { registerUser } from "../../store/actions/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, loadingUser } from "../../store/actions/auth";
 
 const Register = () => {
+  const loading = useSelector((state) => state.auth.loading);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -34,10 +35,11 @@ const Register = () => {
     const notValid = [email, password, passwordConfirmation].some((el) => el.length < 6);
     if (notValid) {
       setError(
-        "Please fill in the form correctly. Each field needs to contain 6 characters or more!"
+        "Please fill in the passwords correctly. Each field needs to contain 6 characters or more!"
       );
       return;
     }
+    dispatch(loadingUser());
     dispatch(registerUser(email, password));
     setError(null);
   };
@@ -58,6 +60,7 @@ const Register = () => {
               required={true}
               type="text"
               name="username"
+              className={error && error.toLowerCase().includes("username") ? "error" : ""}
               minLength={4}
               placeholder="Username"
               value={username}
@@ -83,6 +86,7 @@ const Register = () => {
               minLength={6}
               type="password"
               name="password"
+              className={error && error.toLowerCase().includes("password") ? "error" : ""}
               placeholder="Password"
               value={password}
               onChange={(e) => handleChange(e)}
@@ -95,12 +99,19 @@ const Register = () => {
               minLength={6}
               type="password"
               name="passwordConfirmation"
+              className={error && error.toLowerCase().includes("password") ? "error" : ""}
               placeholder="Confirm Password"
               value={passwordConfirmation}
               onChange={(e) => handleChange(e)}
             />
-            <Button fluid color="orange" size="large">
-              <Button.Content>Submit</Button.Content>
+            <Button
+              disabled={loading}
+              className={loading ? "loading" : ""}
+              fluid
+              color="orange"
+              size="large"
+            >
+              Submit
             </Button>
           </Segment>
         </Form>

@@ -1,8 +1,8 @@
-import { REGISTER_SUCCESS, REGISTER_FAIL } from "../actions/types";
+import { REGISTER_SUCCESS, REGISTER_FAIL, LOADING_USER } from "../actions/types";
 
 const initialState = {
   user: null,
-  loading: true,
+  loading: false,
   isAuthenticated: false,
 };
 
@@ -19,8 +19,13 @@ export default function (state = initialState, action) {
     case REGISTER_FAIL:
       return {
         user: null,
-        loading: true,
+        loading: false,
         isAuthenticated: false,
+      };
+    case LOADING_USER:
+      return {
+        ...state,
+        loading: true,
       };
     default:
       return state;

@@ -1,5 +1,5 @@
 import firebase from "../../firebase";
-import { REGISTER_SUCCESS, REGISTER_FAIL } from "./types";
+import { REGISTER_SUCCESS, REGISTER_FAIL, LOADING_USER } from "./types";
 
 export const registerUser = (email, password) => async (dispatch) => {
   try {
@@ -12,8 +12,13 @@ export const registerUser = (email, password) => async (dispatch) => {
     });
   } catch (err) {
     console.log(err);
+    alert(err.message);
     dispatch({
       type: REGISTER_FAIL,
     });
   }
 };
+
+export const loadingUser = () => ({
+  type: LOADING_USER,
+});

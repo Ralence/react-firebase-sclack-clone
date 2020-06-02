@@ -10,15 +10,21 @@ import Register from "./components/auth/Register";
 
 import "semantic-ui-css/semantic.min.css";
 
+// Redux Store
+import { Provider } from "react-redux";
+import store from "./store";
+
 const Root = () => {
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/" component={App} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/register" component={Register} />
-      </Switch>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={App} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+        </Switch>
+      </Router>
+    </Provider>
   );
 };
 

@@ -40,7 +40,7 @@ const Register = () => {
       return;
     }
     dispatch(loadingUser());
-    dispatch(registerUser(email, password));
+    dispatch(registerUser(email, password, username));
     setError(null);
   };
 

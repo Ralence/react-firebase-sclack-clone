@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Grid, Form, Segment, Button, Header, Message, Icon } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, loadingUser } from "../../store/actions/auth";
+import { registerUser, loadingUser, setError } from "../../store/actions/auth";
 
 const Register = () => {
   const loading = useSelector((state) => state.auth.loading);
@@ -12,7 +12,7 @@ const Register = () => {
     password: "",
     passwordConfirmation: "",
   });
-  const [error, setError] = useState(null);
+  const error = useSelector((state) => state.auth.error);
   const { username, email, password, passwordConfirmation } = formData;
 
   const dispatch = useDispatch();
@@ -24,24 +24,27 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== passwordConfirmation) {
-      setError("Passwords do not match!");
+      dispatch(setError("Passwords do not match!"));
       return;
     }
     const nameInvalid = username.length < 4;
     if (nameInvalid) {
-      setError("Username must contain 4 or more characters!");
+      dispatch(setError("Username must contain 4 or more characters!"));
       return;
     }
     const notValid = [email, password, passwordConfirmation].some((el) => el.length < 6);
     if (notValid) {
-      setError(
-        "Please fill in the passwords correctly. Each field needs to contain 6 characters or more!"
+      dispatch(
+        setError(
+          "Please fill in the passwords correctly. Each field needs to contain 6 characters or more!"
+        )
       );
+
       return;
     }
     dispatch(loadingUser());
     dispatch(registerUser(email, password, username));
-    setError(null);
+    dispatch(setError(null));
   };
 
   return (

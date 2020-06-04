@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
+
+import firebase from "./firebase";
 
 import App from "./components/App";
 import * as serviceWorker from "./serviceWorker";
@@ -15,22 +17,31 @@ import { Provider } from "react-redux";
 import store from "./store";
 
 const Root = () => {
+  const history = useHistory();
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        history.push("/");
+      }
+    });
+  }, [history]);
   return (
     <Provider store={store}>
-      <Router>
-        <Switch>
-          <Route exact path="/" component={App} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
-        </Switch>
-      </Router>
+      <Switch>
+        <Route exact path="/" component={App} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
+      </Switch>
     </Provider>
   );
 };
 
 ReactDOM.render(
   <React.StrictMode>
-    <Root />
+    <Router>
+      <Root />
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );

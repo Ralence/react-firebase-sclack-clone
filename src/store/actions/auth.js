@@ -66,3 +66,7 @@ export const setError = (error) => (dispatch) => {
     payload: error,
   });
 };
+
+export const logoutUser = () => ({
+  type: LOADING_USER,
+});

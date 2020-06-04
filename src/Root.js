@@ -7,6 +7,7 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import firebase from "./firebase";
 import { logoutUser } from "./store/actions/auth";
+import { LOGIN_SUCCESS } from "./store/actions/types";
 
 const Root = () => {
   const history = useHistory();
@@ -17,6 +18,10 @@ const Root = () => {
       console.log(user);
       if (user === null) dispatch(logoutUser());
       if (user) {
+        dispatch({
+          type: LOGIN_SUCCESS,
+          payload: user,
+        });
         history.push("/");
       }
     });

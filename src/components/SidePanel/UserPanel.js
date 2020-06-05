@@ -7,6 +7,7 @@ import {
   HeaderContent,
   Icon,
   Dropdown,
+  Image,
 } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingUser } from "../../store/actions/auth";
@@ -65,11 +66,20 @@ const UserPanel = () => {
             <Icon name="code" />
             <HeaderContent>DevChat</HeaderContent>
           </Header>
+
+          {/** User dropdown */}
+          <Header style={{ padding: "0.25em" }} as="h4" inverted>
+            <Dropdown
+              trigger={
+                <span>
+                  <Image src={user && user.photoURL} alt="avatar" spaced="right" avatar />
+                  {user && user.displayName}
+                </span>
+              }
+              options={dropdownOptions()}
+            />
+          </Header>
         </GridRow>
-        {/** User dropdown */}
-        <Header style={{ padding: "0.25em" }} as="h4" inverted>
-          <Dropdown trigger={<span>{user && user.displayName}</span>} options={dropdownOptions()} />
-        </Header>
       </GridColumn>
     </Grid>
   );

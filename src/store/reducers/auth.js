@@ -51,7 +51,7 @@ export default function (state = initialState, action) {
     case LOADING_USER:
       return {
         ...state,
-        loading: true,
+        loading: payload,
       };
     default:
       return state;

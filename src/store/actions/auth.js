@@ -6,6 +6,7 @@ import {
   LOADING_USER,
   LOGIN_FAIL,
   LOGIN_SUCCESS,
+  LOGOUT_USER,
   SET_ERROR,
 } from "./types";
 
@@ -67,6 +68,7 @@ export const setError = (error) => (dispatch) => {
   });
 };
 
-export const logoutUser = () => ({
-  type: LOADING_USER,
+export const logoutUser = (loading = true) => ({
+  type: LOGOUT_USER,
+  payload: loading,
 });

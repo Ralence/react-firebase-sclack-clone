@@ -1,9 +1,7 @@
-import firebase from "../../firebase";
-import { ADD_CHANNEL } from "./types";
+import { SET_CHANNELS } from "./types";
 
-export const addChannel = (formData, user) => async (dispatch) => {
+export const addChannel = (formData, user, channelsRef) => async (dispatch) => {
   const { channelName, channelDetails } = formData;
-  const channelsRef = firebase.database().ref("channels");
 
   const key = (await channelsRef.push()).key;
 
@@ -19,10 +17,13 @@ export const addChannel = (formData, user) => async (dispatch) => {
 
   channelsRef
     .child(key)
-    .update(newChannel, (data) => {
-      console.log("data", data);
-    })
+    .update(newChannel, (data) => {})
     .catch((err) => {
       console.log(err);
     });
 };
+
+export const setChannels = (channels) => ({
+  type: SET_CHANNELS,
+  payload: channels,
+});

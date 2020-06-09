@@ -7,6 +7,7 @@ import {
   SET_ERROR,
   LOGOUT_USER,
   ADD_CHANNEL,
+  SET_CHANNELS,
 } from "../actions/types";
 
 const initialState = {
@@ -19,9 +20,10 @@ export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case ADD_CHANNEL:
+    case SET_CHANNELS:
       return {
         ...state,
-        channels: [...state.channels, payload],
+        channels: [...payload],
         loading: false,
         error: null,
       };

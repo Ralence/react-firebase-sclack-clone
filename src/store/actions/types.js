@@ -7,3 +7,4 @@ export const SET_ERROR = "SET_ERROR";
 export const LOGOUT_USER = "LOGOUT_USER";
 // messages
 export const ADD_CHANNEL = "ADD_CHANNELS";
+export const SET_CHANNELS = "SET_CHANNELS";

@@ -1,11 +1,32 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
+import firebase from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { Menu, MenuItem, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
 
-import { addChannel } from "../../store/actions/messages";
+import { addChannel, setChannels } from "../../store/actions/messages";
+
+const ChannelList = () => {
+  const channels = useSelector((state) => state.messages.channels);
+  return (
+    <Fragment>
+      {channels.map((channel) => {
+        return (
+          <MenuItem
+            key={channel.id}
+            onClick={() => console.log(channel)}
+            name={channel.name}
+            style={{ opacity: "0.7" }}
+          >
+            # {channel.name}
+          </MenuItem>
+        );
+      })}
+    </Fragment>
+  );
+};
 
 const Channels = () => {
-  const [channels, setChannels] = useState([]);
+  const channels = useSelector((state) => state.messages.channels);
   const [showModal, setModal] = useState(false);
   const [formData, setFormData] = useState({
     channelName: "",
@@ -17,10 +38,22 @@ const Channels = () => {
 
   const { channelName, channelDetails } = formData;
 
+  useEffect(() => {
+    const channelsRef = firebase.database().ref("channels");
+    const loadedChannels = [];
+
+    channelsRef.on("child_added", (snap) => {
+      loadedChannels.push(snap.val());
+      dispatch(setChannels(loadedChannels));
+    });
+  }, [dispatch]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const channelsRef = firebase.database().ref("channels");
     if (isFormValid(channelName, channelDetails)) {
-      dispatch(addChannel(formData, currentUser));
+      dispatch(addChannel(formData, currentUser, channelsRef));
       setFormData({
         channelName: "",
         channelDetails: "",
@@ -34,6 +67,7 @@ const Channels = () => {
   const isFormValid = (channelName, channelDetails) => {
     return channelName.length > 2 && channelDetails.length > 2;
   };
+
   return (
     <Fragment>
       <Menu.Menu style={{ paddingBottom: "2em" }}>
@@ -41,8 +75,9 @@ const Channels = () => {
           <span>
             <Icon name="exchange" /> CHANNELS
           </span>{" "}
-          ({channels.length}) <Icon name="add" onClick={() => setModal(true)} />
+          ({channels ? channels.length : "0"}) <Icon name="add" onClick={() => setModal(true)} />
         </MenuItem>
+        {channels && channels.length > 0 && <ChannelList />}
       </Menu.Menu>
       <Modal basic open={showModal} onClose={() => setModal(false)}>
         <Modal.Header>Add a Channel</Modal.Header>

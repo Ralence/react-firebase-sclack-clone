@@ -5,3 +5,5 @@ export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const SET_ERROR = "SET_ERROR";
 export const LOGOUT_USER = "LOGOUT_USER";
+// messages
+export const ADD_CHANNEL = "ADD_CHANNELS";

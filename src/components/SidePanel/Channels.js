@@ -1,5 +1,8 @@
 import React, { useState, Fragment } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Menu, MenuItem, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
+
+import { addChannel } from "../../store/actions/messages";
 
 const Channels = () => {
   const [channels, setChannels] = useState([]);
@@ -8,9 +11,29 @@ const Channels = () => {
     channelName: "",
     channelDetails: "",
   });
+  const currentUser = useSelector((state) => state.auth.user);
+
+  const dispatch = useDispatch();
 
   const { channelName, channelDetails } = formData;
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isFormValid(channelName, channelDetails)) {
+      dispatch(addChannel(formData, currentUser));
+      setFormData({
+        channelName: "",
+        channelDetails: "",
+      });
+      setModal(false);
+    } else {
+      alert("Please fill out all the fields!");
+    }
+  };
+
+  const isFormValid = (channelName, channelDetails) => {
+    return channelName.length > 2 && channelDetails.length > 2;
+  };
   return (
     <Fragment>
       <Menu.Menu style={{ paddingBottom: "2em" }}>
@@ -24,10 +47,13 @@ const Channels = () => {
       <Modal basic open={showModal} onClose={() => setModal(false)}>
         <Modal.Header>Add a Channel</Modal.Header>
         <Modal.Content>
-          <Form>
+          <Form onSubmit={(e) => handleSubmit(e)}>
             <Form.Field>
               <Input
                 fluid
+                type="text"
+                minLength={3}
+                required={true}
                 label="Name of Channel"
                 name="channelName"
                 value={channelName}
@@ -37,6 +63,9 @@ const Channels = () => {
             <Form.Field>
               <Input
                 fluid
+                type="text"
+                required={true}
+                minLength={3}
                 label="Channel Details"
                 name="channelDetails"
                 value={channelDetails}
@@ -46,7 +75,7 @@ const Channels = () => {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button color="green" inverted>
+          <Button color="green" inverted onClick={(e) => handleSubmit(e)}>
             <Icon name="checkmark" /> Add
           </Button>
           <Button

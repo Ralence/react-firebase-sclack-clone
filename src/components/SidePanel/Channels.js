@@ -51,6 +51,7 @@ const Channels = () => {
 
       if (loadedChannels.length === 1) dispatch(setCurrentChannel(loadedChannels[0]));
     });
+    return () => (cleanUp) => channelsRef.off();
   }, [dispatch]);
 
   const handleSubmit = (e) => {

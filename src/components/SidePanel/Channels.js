@@ -6,7 +6,7 @@ import { Menu, MenuItem, Icon, Modal, Form, Input, Button } from "semantic-ui-re
 import { addChannel, setChannels, setCurrentChannel } from "../../store/actions/messages";
 
 const ChannelList = () => {
-  const channels = useSelector((state) => state.messages.channels);
+  const { channels, currentChannel } = useSelector((state) => state.messages);
   const dispatch = useDispatch();
 
   return (
@@ -18,6 +18,7 @@ const ChannelList = () => {
             onClick={() => dispatch(setCurrentChannel(channel))}
             name={channel.name}
             style={{ opacity: "0.7" }}
+            active={currentChannel && channel.id === currentChannel.id}
           >
             # {channel.name}
           </MenuItem>
@@ -47,6 +48,8 @@ const Channels = () => {
     channelsRef.on("child_added", (snap) => {
       loadedChannels.push(snap.val());
       dispatch(setChannels(loadedChannels));
+
+      if (loadedChannels.length === 1) dispatch(setCurrentChannel(loadedChannels[0]));
     });
   }, [dispatch]);
 

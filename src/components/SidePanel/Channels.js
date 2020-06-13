@@ -3,17 +3,19 @@ import firebase from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { Menu, MenuItem, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
 
-import { addChannel, setChannels } from "../../store/actions/messages";
+import { addChannel, setChannels, setCurrentChannel } from "../../store/actions/messages";
 
 const ChannelList = () => {
   const channels = useSelector((state) => state.messages.channels);
+  const dispatch = useDispatch();
+
   return (
     <Fragment>
       {channels.map((channel) => {
         return (
           <MenuItem
             key={channel.id}
-            onClick={() => console.log(channel)}
+            onClick={() => dispatch(setCurrentChannel(channel))}
             name={channel.name}
             style={{ opacity: "0.7" }}
           >

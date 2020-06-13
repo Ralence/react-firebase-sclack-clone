@@ -8,10 +8,12 @@ import {
   LOGOUT_USER,
   ADD_CHANNEL,
   SET_CHANNELS,
+  SET_CURRENT_CHANNEL,
 } from "../actions/types";
 
 const initialState = {
   channels: null,
+  currentChannel: null,
   loading: true,
   error: null,
 };
@@ -24,6 +26,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         channels: [...payload],
+        loading: false,
+        error: null,
+      };
+    case SET_CURRENT_CHANNEL:
+      return {
+        ...state,
+        currentChannel: payload,
         loading: false,
         error: null,
       };

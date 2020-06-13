@@ -1,3 +1,4 @@
+// user
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const LOADING_USER = "LOADING_USER";
@@ -8,3 +9,4 @@ export const LOGOUT_USER = "LOGOUT_USER";
 // messages
 export const ADD_CHANNEL = "ADD_CHANNELS";
 export const SET_CHANNELS = "SET_CHANNELS";
+export const SET_CURRENT_CHANNEL = "SET_CURRENT_CHANNEL";

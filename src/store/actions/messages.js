@@ -1,4 +1,4 @@
-import { SET_CHANNELS } from "./types";
+import { SET_CHANNELS, SET_CURRENT_CHANNEL } from "./types";
 
 export const addChannel = (formData, user, channelsRef) => async (dispatch) => {
   const { channelName, channelDetails } = formData;
@@ -26,4 +26,9 @@ export const addChannel = (formData, user, channelsRef) => async (dispatch) => {
 export const setChannels = (channels) => ({
   type: SET_CHANNELS,
   payload: channels,
+});
+
+export const setCurrentChannel = (selectedChannel) => ({
+  type: SET_CURRENT_CHANNEL,
+  payload: selectedChannel,
 });

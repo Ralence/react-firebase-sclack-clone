@@ -3,7 +3,7 @@ import { Segment, Button, Input, ButtonGroup } from "semantic-ui-react";
 
 const MessageForm = () => {
   return (
-    <Segment className="messages__form">
+    <Segment className="message__form">
       <Input
         fluid
         name="message"
@@ -14,7 +14,7 @@ const MessageForm = () => {
       />
       <ButtonGroup icon widths="2">
         <Button color="orange" content="Add Reply" labelPosition="left" icon="edit" />
-        <Button color="teal" compact="Upload Media" labelPosition="right" icon="upload media" />
+        <Button color="teal" content="Upload Media" labelPosition="right" icon="upload media" />
       </ButtonGroup>
     </Segment>
   );

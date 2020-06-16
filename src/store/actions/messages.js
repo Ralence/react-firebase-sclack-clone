@@ -1,4 +1,10 @@
-import { SET_CHANNELS, SET_CURRENT_CHANNEL, SET_MSG_ERROR, LOADING_MSGS } from "./types";
+import {
+  SET_CHANNELS,
+  SET_CURRENT_CHANNEL,
+  SET_MSG_ERROR,
+  LOADING_MSGS,
+  SET_CURRENT_MESSAGES,
+} from "./types";
 
 export const addChannel = (formData, user, channelsRef) => async (dispatch) => {
   const { channelName, channelDetails } = formData;
@@ -42,4 +48,9 @@ export const setMsgError = (error = null) => ({
 export const setLoadingMsgs = (loading = false) => ({
   type: LOADING_MSGS,
   payload: loading,
+});
+
+export const setCurrentMessages = (messages) => ({
+  type: SET_CURRENT_MESSAGES,
+  payload: messages,
 });

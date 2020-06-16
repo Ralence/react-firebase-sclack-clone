@@ -5,11 +5,13 @@ import {
   SET_CURRENT_CHANNEL,
   SET_MSG_ERROR,
   LOADING_MSGS,
+  SET_CURRENT_MESSAGES,
 } from "../actions/types";
 
 const initialState = {
   channels: null,
   currentChannel: null,
+  currentMessages: [],
   loading: true,
   error: null,
 };
@@ -29,6 +31,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         currentChannel: payload,
+        loading: false,
+        error: null,
+      };
+    case SET_CURRENT_MESSAGES:
+      return {
+        ...state,
+        currentMessages: payload,
         loading: false,
         error: null,
       };

@@ -6,7 +6,7 @@ const MessagesHeader = () => {
   return (
     <Segment clearing>
       {/* Channel Title */}
-      <Header fluid={true} as="h2" floated="left" style={{ marginBottom: "0" }}>
+      <Header as="h2" floated="left" style={{ marginBottom: "0" }}>
         <span>
           Channel
           <Icon name="star outline" color="black" />

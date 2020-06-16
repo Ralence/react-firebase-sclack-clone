@@ -10,3 +10,5 @@ export const LOGOUT_USER = "LOGOUT_USER";
 export const ADD_CHANNEL = "ADD_CHANNELS";
 export const SET_CHANNELS = "SET_CHANNELS";
 export const SET_CURRENT_CHANNEL = "SET_CURRENT_CHANNEL";
+export const SET_MSG_ERROR = "SET_MSG_ERROR";
+export const LOADING_MSGS = "LOADING_MSGS";

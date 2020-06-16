@@ -1,14 +1,10 @@
 import {
-  REGISTER_SUCCESS,
-  REGISTER_FAIL,
-  LOADING_USER,
-  LOGIN_FAIL,
-  LOGIN_SUCCESS,
-  SET_ERROR,
   LOGOUT_USER,
   ADD_CHANNEL,
   SET_CHANNELS,
   SET_CURRENT_CHANNEL,
+  SET_MSG_ERROR,
+  LOADING_MSGS,
 } from "../actions/types";
 
 const initialState = {
@@ -40,11 +36,16 @@ export default function (state = initialState, action) {
       return {
         ...initialState,
       };
-    case SET_ERROR:
+    case SET_MSG_ERROR:
       return {
         ...state,
         error: payload,
         loading: false,
+      };
+    case LOADING_MSGS:
+      return {
+        ...state,
+        loading: payload,
       };
     default:
       return state;

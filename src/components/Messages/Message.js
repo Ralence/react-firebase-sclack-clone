@@ -18,7 +18,7 @@ const Message = ({ message, user }) => {
 
   return (
     <Comment>
-      <CommentAvatar src={user.photoURL} />
+      <CommentAvatar src={message.user.avatar} />
       <CommentContent className={isOwnComment()}>
         <CommentAuthor as="a">{message.user.name}</CommentAuthor>
         <CommentMetadata>{timeFromNow(message.timestamp)}</CommentMetadata>

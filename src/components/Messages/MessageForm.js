@@ -3,8 +3,11 @@ import { Segment, Button, Input, ButtonGroup } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 import { setMsgError, setLoadingMsgs } from "../../store/actions/messages";
 import firebase from "../../firebase";
+import FileModal from "./FileModal";
 
 const MessageForm = () => {
+  const [modal, openModal] = useState(false);
+
   const { currentChannel, error, loading } = useSelector((state) => state.messages);
   const { user } = useSelector((state) => state.auth);
   const [message, setMessage] = useState("");
@@ -81,7 +84,9 @@ const MessageForm = () => {
           labelPosition="right"
           icon="upload cloud"
           disabled={loading}
+          onClick={() => openModal(true)}
         />
+        <FileModal modal={modal} closeModal={() => openModal(false)} />
       </ButtonGroup>
     </Segment>
   );

@@ -17,7 +17,7 @@ const Root = () => {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      console.log(user);
+      // console.log(user);
       if (user === null) {
         dispatch(logoutUser());
         history.push("/login");

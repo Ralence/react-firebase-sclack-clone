@@ -5,11 +5,7 @@ import firebase from "../../firebase";
 import MessagesHeader from "./MessagesHeader";
 import MessageForm from "./MessageForm";
 import Message from "./Message";
-import {
-  setCurrentMessages,
-  setLoadingMsgs,
-  setCurrentChannel,
-} from "../../store/actions/messages";
+import { setCurrentMessages, setLoadingMsgs } from "../../store/actions/messages";
 
 const Messages = () => {
   const user = useSelector((state) => state.auth.user);
@@ -25,7 +21,7 @@ const Messages = () => {
       messagesRef.child(currentChannel.id).on("child_added", (snap) => {
         dispatch(setLoadingMsgs(true));
         loadedMessages.push(snap.val());
-        console.log(loadedMessages);
+        // console.log(loadedMessages);
         dispatch(setCurrentMessages(loadedMessages));
         dispatch(setLoadingMsgs(false));
       });

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { Segment, Button, Input, ButtonGroup } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 import { setMsgError, setLoadingMsgs } from "../../store/actions/messages";
@@ -8,6 +9,11 @@ import FileModal from "./FileModal";
 const MessageForm = () => {
   const [modal, openModal] = useState(false);
 
+  const [uploadState, setUploadState] = useState("");
+  const [percentUploaded, setPercentUploaded] = useState(0);
+
+  const storageRef = firebase.storage().ref();
+
   const { currentChannel, error, loading } = useSelector((state) => state.messages);
   const { user } = useSelector((state) => state.auth);
   const [message, setMessage] = useState("");
@@ -15,15 +21,24 @@ const MessageForm = () => {
 
   const messagesRef = firebase.database().ref("messages");
 
-  const createMessage = () => ({
-    timestamp: firebase.database.ServerValue.TIMESTAMP,
-    content: message,
-    user: {
-      id: user.uid,
-      name: user.displayName,
-      avatar: user.photoURL,
-    },
-  });
+  const createMessage = (fileURL = null) => {
+    const message = {
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
+      user: {
+        id: user.uid,
+        name: user.displayName,
+        avatar: user.photoURL,
+      },
+    };
+
+    if (fileURL !== null) {
+      message.image = fileURL;
+    } else {
+      message.content = message;
+    }
+
+    return message;
+  };
 
   const sendMessage = () => {
     if (message) {
@@ -50,8 +65,55 @@ const MessageForm = () => {
     }
   };
 
+  const sendFileMessage = (fileURL, ref, pathToUpload) => {
+    ref
+      .child(pathToUpload)
+      .push()
+      .set(createMessage(fileURL))
+      .then(() => {
+        // TODO set state to 'done'
+        setUploadState("done");
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(setMsgError(err));
+        setUploadState("error");
+      });
+  };
+
   const uploadFile = (file, metadata) => {
-    console.log(file, metadata);
+    const pathToUpload = currentChannel.id;
+    const ref = messagesRef;
+    let uploadTask = null;
+
+    const filePath = `chat/public/${uuidv4()}.jpeg`;
+
+    setUploadState("uploading");
+    uploadTask = storageRef.child(filePath).put(file, metadata);
+
+    uploadTask.on(
+      "state_changed",
+      (snap) => {
+        const percentOfFileUploaded = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+        setPercentUploaded(percentOfFileUploaded);
+      },
+      (err) => {
+        console.log(err);
+        dispatch(setMsgError(err));
+        setUploadState("error");
+      },
+      () => {
+        uploadTask.snapshot.ref
+          .getDownloadURL()
+          .then((downloadURL) => {
+            sendFileMessage(downloadURL, messagesRef, pathToUpload);
+          })
+          .catch((err) => {
+            dispatch(setMsgError(err));
+            setUploadState("error");
+          });
+      }
+    );
   };
 
   return (

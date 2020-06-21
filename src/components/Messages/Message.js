@@ -7,6 +7,7 @@ import {
   CommentAuthor,
   CommentMetadata,
   CommentText,
+  Image,
 } from "semantic-ui-react";
 
 const Message = ({ message, user }) => {
@@ -22,7 +23,11 @@ const Message = ({ message, user }) => {
       <CommentContent className={isOwnComment()}>
         <CommentAuthor as="a">{message.user.name}</CommentAuthor>
         <CommentMetadata>{timeFromNow(message.timestamp)}</CommentMetadata>
-        <CommentText>{message.content}</CommentText>
+        {message && message.image ? (
+          <Image src={message.image} className="message__image" />
+        ) : (
+          <CommentText>{message.content}</CommentText>
+        )}
       </CommentContent>
     </Comment>
   );

@@ -21,24 +21,16 @@ const MessageForm = () => {
 
   const messagesRef = firebase.database().ref("messages");
 
-  const createMessage = (fileURL = null) => {
-    const message = {
-      timestamp: firebase.database.ServerValue.TIMESTAMP,
-      user: {
-        id: user.uid,
-        name: user.displayName,
-        avatar: user.photoURL,
-      },
-    };
-
-    if (fileURL !== null) {
-      message.image = fileURL;
-    } else {
-      message.content = message;
-    }
-
-    return message;
-  };
+  const createMessage = (fileURL = null) => ({
+    timestamp: firebase.database.ServerValue.TIMESTAMP,
+    content: !fileURL ? message : null,
+    image: fileURL || null,
+    user: {
+      id: user.uid,
+      name: user.displayName,
+      avatar: user.photoURL,
+    },
+  });
 
   const sendMessage = () => {
     if (message) {
@@ -52,7 +44,6 @@ const MessageForm = () => {
           dispatch(setLoadingMsgs(false));
           setMessage("");
           dispatch(setMsgError(null));
-          console.log(res);
         })
         .catch((err) => {
           console.log(err);
@@ -118,42 +109,49 @@ const MessageForm = () => {
 
   return (
     <Segment className="message__form">
-      <Input
-        fluid
-        type="text"
-        name="message"
-        style={{ marginBottom: "0.7rem" }}
-        label={<Button icon="add" />}
-        labelPosition="left"
-        placeholder="Write your message..."
-        value={message}
-        onChange={(e) => {
-          setMessage(e.target.value);
-          if (error) dispatch(setMsgError(null));
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          sendMessage();
         }}
-        className={error ? "error" : ""}
-      />
-      <ButtonGroup icon widths="2">
-        <Button
-          color="orange"
-          content="Add Reply"
+      >
+        <Input
+          fluid
+          type="text"
+          name="message"
+          style={{ marginBottom: "0.7rem" }}
+          label={<Button icon="add" />}
           labelPosition="left"
-          icon="edit"
-          disabled={loading}
-          onClick={() => {
-            sendMessage();
+          placeholder="Write your message..."
+          value={message}
+          onChange={(e) => {
+            setMessage(e.target.value);
+            if (error) dispatch(setMsgError(null));
           }}
+          className={error ? "error" : ""}
         />
-        <Button
-          color="teal"
-          content="Upload Media"
-          labelPosition="right"
-          icon="upload cloud"
-          disabled={loading}
-          onClick={() => openModal(true)}
-        />
-        <FileModal modal={modal} closeModal={() => openModal(false)} uploadFile={uploadFile} />
-      </ButtonGroup>
+        <ButtonGroup icon widths="2">
+          <Button
+            color="orange"
+            content="Add Reply"
+            labelPosition="left"
+            icon="edit"
+            disabled={loading}
+            onClick={() => {
+              sendMessage();
+            }}
+          />
+          <Button
+            color="teal"
+            content="Upload Media"
+            labelPosition="right"
+            icon="upload cloud"
+            disabled={loading}
+            onClick={() => openModal(true)}
+          />
+          <FileModal modal={modal} closeModal={() => openModal(false)} uploadFile={uploadFile} />
+        </ButtonGroup>
+      </form>
     </Segment>
   );
 };

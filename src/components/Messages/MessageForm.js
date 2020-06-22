@@ -143,6 +143,7 @@ const MessageForm = () => {
           />
           <Button
             color="teal"
+            disabled={uploadState === "uploading"}
             content="Upload Media"
             labelPosition="right"
             icon="upload cloud"

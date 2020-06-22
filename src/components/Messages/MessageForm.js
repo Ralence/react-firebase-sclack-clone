@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setMsgError, setLoadingMsgs } from "../../store/actions/messages";
 import firebase from "../../firebase";
 import FileModal from "./FileModal";
+import ProgressBar from "./ProgressBar";
 
 const MessageForm = () => {
   const [modal, openModal] = useState(false);
@@ -74,7 +75,6 @@ const MessageForm = () => {
 
   const uploadFile = (file, metadata) => {
     const pathToUpload = currentChannel.id;
-    const ref = messagesRef;
     let uploadTask = null;
 
     const filePath = `chat/public/${uuidv4()}.jpeg`;
@@ -151,6 +151,7 @@ const MessageForm = () => {
           />
           <FileModal modal={modal} closeModal={() => openModal(false)} uploadFile={uploadFile} />
         </ButtonGroup>
+        <ProgressBar uploadState={uploadState} percentUploaded={percentUploaded} />
       </form>
     </Segment>
   );

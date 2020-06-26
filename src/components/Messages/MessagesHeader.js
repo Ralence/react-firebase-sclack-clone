@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Header, Segment, Input, Icon } from "semantic-ui-react";
 import HeaderSubHeader from "semantic-ui-react/dist/commonjs/elements/Header/HeaderSubheader";
 
-const MessagesHeader = () => {
+const MessagesHeader = ({ handleSearchChange, searchLoading }) => {
   const { name } = useSelector(
     (state) =>
       state &&
@@ -52,7 +52,14 @@ const MessagesHeader = () => {
       </Header>
       {/* Channel Search*/}
       <Header floated="right">
-        <Input size="mini" icon="search" name="searchTerm" placeholder="Search Messages" />
+        <Input
+          loading={searchLoading}
+          size="mini"
+          icon="search"
+          name="searchTerm"
+          placeholder="Search Messages"
+          onChange={(e) => handleSearchChange(e)}
+        />
       </Header>
     </Segment>
   );

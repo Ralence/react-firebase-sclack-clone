@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Segment, CommentGroup, Loader, Dimmer, Image } from "semantic-ui-react";
 import firebase from "../../firebase";
@@ -10,8 +10,29 @@ import { setCurrentMessages, setLoadingMsgs } from "../../store/actions/messages
 const Messages = () => {
   const user = useSelector((state) => state.auth.user);
   const { currentChannel, currentMessages, loading } = useSelector((state) => state.messages);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState([]);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!searchTerm) return;
+    if (searchTerm && currentMessages) {
+      const messages = [...currentMessages];
+      const regex = new RegExp(searchTerm, "gi");
+      const result = messages.reduce((acc, msg) => {
+        if ((msg.content && msg.content.match(regex)) || msg.user.name.match(regex)) {
+          acc.push(msg);
+        }
+        return acc;
+      }, []);
+      setSearchResult(result);
+      setTimeout(() => {
+        setSearchLoading(false);
+      }, 800);
+    }
+  }, [searchTerm, currentMessages]);
 
   useEffect(() => {
     const messagesRef = firebase.database().ref("messages");
@@ -29,9 +50,17 @@ const Messages = () => {
     return () => (cleanup) => messagesRef.off();
   }, [currentChannel, user, dispatch]);
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setSearchLoading(true);
+    setTimeout(() => {
+      setSearchTerm("");
+    }, 5000);
+  };
+
   return (
     <Fragment>
-      <MessagesHeader />
+      <MessagesHeader searchLoading={searchLoading} handleSearchChange={handleSearchChange} />
       <Segment>
         <CommentGroup className="messages">
           {loading && (
@@ -43,7 +72,9 @@ const Messages = () => {
               <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
             </Fragment>
           )}
-          {currentMessages && currentMessages.length
+          {searchTerm
+            ? searchResult.map((msg) => <Message key={msg.timestamp} message={msg} user={user} />)
+            : currentMessages && currentMessages.length
             ? currentMessages.map((msg) => (
                 <Message key={msg.timestamp} message={msg} user={user} />
               ))

@@ -6,6 +6,8 @@ import {
   SET_MSG_ERROR,
   LOADING_MSGS,
   SET_CURRENT_MESSAGES,
+  SET_SEARCH_TERM,
+  CLEAR_SEARCH_TERM,
 } from "../actions/types";
 
 const initialState = {
@@ -14,6 +16,7 @@ const initialState = {
   currentMessages: [],
   loading: true,
   error: null,
+  messageSearchTerm: "",
 };
 
 export default function (state = initialState, action) {
@@ -40,6 +43,16 @@ export default function (state = initialState, action) {
         currentMessages: payload,
         loading: false,
         error: null,
+      };
+    case SET_SEARCH_TERM:
+      return {
+        ...state,
+        messageSearchTerm: payload,
+      };
+    case CLEAR_SEARCH_TERM:
+      return {
+        ...state,
+        messageSearchTerm: "",
       };
     case LOGOUT_USER:
       return {

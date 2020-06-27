@@ -4,6 +4,8 @@ import {
   SET_MSG_ERROR,
   LOADING_MSGS,
   SET_CURRENT_MESSAGES,
+  SET_SEARCH_TERM,
+  CLEAR_SEARCH_TERM,
 } from "./types";
 
 export const addChannel = (formData, user, channelsRef) => async (dispatch) => {
@@ -38,6 +40,15 @@ export const setChannels = (channels) => ({
 export const setCurrentChannel = (selectedChannel) => ({
   type: SET_CURRENT_CHANNEL,
   payload: selectedChannel,
+});
+
+export const setSearchMsgTerm = (term) => ({
+  type: SET_SEARCH_TERM,
+  payload: term,
+});
+
+export const clearSearchMsgTerm = () => ({
+  type: CLEAR_SEARCH_TERM,
 });
 
 export const setMsgError = (error = null) => ({

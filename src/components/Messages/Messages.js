@@ -5,12 +5,13 @@ import firebase from "../../firebase";
 import MessagesHeader from "./MessagesHeader";
 import MessageForm from "./MessageForm";
 import Message from "./Message";
-import { setCurrentMessages, setLoadingMsgs } from "../../store/actions/messages";
+import { setCurrentMessages, setLoadingMsgs, setSearchMsgTerm } from "../../store/actions/messages";
 
 const Messages = () => {
   const user = useSelector((state) => state.auth.user);
   const { currentChannel, currentMessages, loading } = useSelector((state) => state.messages);
-  const [searchTerm, setSearchTerm] = useState("");
+  const searchTerm = useSelector((state) => state.messages.messageSearchTerm);
+
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
 
@@ -51,11 +52,8 @@ const Messages = () => {
   }, [currentChannel, user, dispatch]);
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+    dispatch(setSearchMsgTerm(e.target.value));
     setSearchLoading(true);
-    setTimeout(() => {
-      setSearchTerm("");
-    }, 5000);
   };
 
   return (

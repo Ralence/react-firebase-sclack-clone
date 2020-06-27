@@ -16,6 +16,8 @@ const MessagesHeader = ({ handleSearchChange, searchLoading }) => {
     (state) => state && state.auth && state.auth.user && state.auth.user
   );
 
+  const searchTerm = useSelector((state) => state.messages.messageSearchTerm);
+
   const loadedMessages = useSelector(
     (state) =>
       state && state.messages && state.messages.currentMessages && state.messages.currentMessages
@@ -57,6 +59,7 @@ const MessagesHeader = ({ handleSearchChange, searchLoading }) => {
           size="mini"
           icon="search"
           name="searchTerm"
+          value={searchTerm}
           placeholder="Search Messages"
           onChange={(e) => handleSearchChange(e)}
         />

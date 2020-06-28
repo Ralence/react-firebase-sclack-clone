@@ -84,7 +84,7 @@ const Channels = () => {
 
   return (
     <Fragment>
-      <Menu.Menu style={{ paddingBottom: "2em" }}>
+      <Menu.Menu className="menu">
         <MenuItem>
           <span>
             <Icon name="exchange" /> CHANNELS

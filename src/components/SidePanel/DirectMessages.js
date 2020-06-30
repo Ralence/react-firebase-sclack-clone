@@ -1,38 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Icon, MenuMenu, MenuItem } from "semantic-ui-react";
 
 import firebase from "../../firebase";
 
-const DirectMessages = () => {
-  const currentUser = useSelector((state) => state.auth.user);
+class DirectMessages extends Component {
+  state = {
+    users: [],
+    usersRef: firebase.database().ref("users"),
+    connectedRef: firebase.database().ref(".info/connected"),
+    presenceRef: firebase.database().ref("presence"),
+  };
 
-  const [users, setUsers] = useState([]);
+  componentDidMount() {
+    if (this.props.currentUser) {
+      this.addListeners(this.props.currentUser.uid);
+    }
+  }
 
-  const usersRef = firebase.database().ref("users");
-  const connectedRef = firebase.database().ref(".info/connected");
-  const presenceRef = firebase.database().ref("presence");
-
-  const addListeners = (currentUserUid) => {
+  addListeners = (currentUserUid) => {
     const loadedUsers = [];
 
-    usersRef.on("child_added", (snap) => {
+    this.state.usersRef.on("child_added", (snap) => {
       if (currentUserUid !== snap.key) {
         const user = snap.val();
         user["uid"] = snap.key;
         user["status"] = "offline";
 
         loadedUsers.push(user);
-        setUsers(loadedUsers);
+        this.setState({ users: loadedUsers });
       }
     });
 
-    connectedRef.on("value", (snap) => {
+    this.state.connectedRef.on("value", (snap) => {
       if (snap.val() === true) {
-        const ref = presenceRef.child(currentUserUid);
+        const ref = this.state.presenceRef.child(currentUserUid);
 
         ref.set(true);
-        ref.onDisconnect((err) => {
+        ref.onDisconnect().remove((err) => {
           if (err !== null) {
             console.error(err);
           }
@@ -40,59 +45,56 @@ const DirectMessages = () => {
       }
     });
 
-    presenceRef.on("child_added", (snap) => {
+    this.state.presenceRef.on("child_added", (snap) => {
       if (currentUserUid !== snap.key) {
         // Add online status to user
-        addStatusToUser(snap.key);
+        this.addStatusToUser(snap.key);
       }
     });
 
-    presenceRef.on("child_removed", (snap) => {
+    this.state.presenceRef.on("child_removed", (snap) => {
       if (currentUserUid !== snap.key) {
         // Remove online status to user
-        addStatusToUser(snap.key, false);
+        this.addStatusToUser(snap.key, false);
       }
     });
   };
 
-  const addStatusToUser = (userId, connected = true) => {
-    const updatedUsers = users.map((user) => {
-      if (user.uid === userId) {
+  addStatusToUser = (userId, connected = true) => {
+    const updatedUsers = this.state.users.reduce((acc, user) => {
+      if (userId === user.uid) {
         user["status"] = connected ? "online" : "offline";
       }
-      return user;
-    });
+      return acc.concat(user);
+    }, []);
 
-    setUsers(updatedUsers);
+    this.setState({ users: updatedUsers });
   };
+  render() {
+    const { users } = this.state;
+    return (
+      <MenuMenu className="menu">
+        <MenuItem>
+          <span>
+            <Icon name="mail" />
+            DIRECT MESSAGES
+          </span>
+        </MenuItem>
+        {users.map((user) => {
+          console.log(user);
+          return (
+            <MenuItem key={user.uid} style={{ opacity: 0.7, fontStyle: "italic" }}>
+              <Icon name="circle" color={user.status === "online" ? "green" : "red"} />@ {user.name}
+            </MenuItem>
+          );
+        })}
+      </MenuMenu>
+    );
+  }
+}
 
-  useEffect(() => {
-    if (currentUser) {
-      addListeners(currentUser.uid);
-    }
-  }, [currentUser]);
+const mapStateToProps = (state) => ({
+  currentUser: state.auth.user,
+});
 
-  return (
-    <MenuMenu className="menu">
-      <MenuItem>
-        <span>
-          <Icon name="mail" />
-          DIRECT MESSAGES
-        </span>
-      </MenuItem>
-      {users.map((user) => {
-        return (
-          <MenuItem
-            key={user.uid}
-            onClick={() => console.log(user)}
-            style={{ opacity: 0.7, fontStyle: "italic" }}
-          >
-            <Icon name="circle" color={user.status === "online" ? "green" : "red"} />@ {user.name}
-          </MenuItem>
-        );
-      })}
-    </MenuMenu>
-  );
-};
-
-export default DirectMessages;
+export default connect(mapStateToProps)(DirectMessages);

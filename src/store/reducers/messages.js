@@ -8,6 +8,7 @@ import {
   SET_CURRENT_MESSAGES,
   SET_SEARCH_TERM,
   CLEAR_SEARCH_TERM,
+  SET_PRIVATE_CHANNEL,
 } from "../actions/types";
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
   loading: true,
   error: null,
   messageSearchTerm: "",
+  isPrivateChannel: false,
 };
 
 export default function (state = initialState, action) {
@@ -29,6 +31,7 @@ export default function (state = initialState, action) {
         channels: [...payload],
         loading: false,
         error: null,
+        isPrivateChannel: false,
       };
     case SET_CURRENT_CHANNEL:
       return {
@@ -36,6 +39,12 @@ export default function (state = initialState, action) {
         currentChannel: payload,
         loading: false,
         error: null,
+        isPrivateChannel: false,
+      };
+    case SET_PRIVATE_CHANNEL:
+      return {
+        ...state,
+        isPrivateChannel: payload,
       };
     case SET_CURRENT_MESSAGES:
       return {

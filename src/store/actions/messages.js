@@ -6,6 +6,7 @@ import {
   SET_CURRENT_MESSAGES,
   SET_SEARCH_TERM,
   CLEAR_SEARCH_TERM,
+  SET_PRIVATE_CHANNEL,
 } from "./types";
 
 export const addChannel = (formData, user, channelsRef) => async (dispatch) => {
@@ -40,6 +41,11 @@ export const setChannels = (channels) => ({
 export const setCurrentChannel = (selectedChannel) => ({
   type: SET_CURRENT_CHANNEL,
   payload: selectedChannel,
+});
+
+export const setPrivateChannel = (isPrivateChannel) => ({
+  type: SET_PRIVATE_CHANNEL,
+  payload: isPrivateChannel,
 });
 
 export const setSearchMsgTerm = (term) => ({

@@ -143,11 +143,10 @@ const MessageForm = () => {
           />
           <Button
             color="teal"
-            disabled={uploadState === "uploading"}
+            disabled={uploadState === "uploading" || loading}
             content="Upload Media"
             labelPosition="right"
             icon="upload cloud"
-            disabled={loading}
             onClick={() => openModal(true)}
           />
           <FileModal modal={modal} closeModal={() => openModal(false)} uploadFile={uploadFile} />

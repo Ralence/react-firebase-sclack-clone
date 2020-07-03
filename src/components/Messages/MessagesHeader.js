@@ -4,6 +4,7 @@ import { Header, Segment, Input, Icon } from "semantic-ui-react";
 import HeaderSubHeader from "semantic-ui-react/dist/commonjs/elements/Header/HeaderSubheader";
 
 const MessagesHeader = ({ handleSearchChange, searchLoading }) => {
+  const isPrivateChannel = useSelector((state) => state.messages.isPrivateChannel);
   const { name } = useSelector(
     (state) =>
       state &&
@@ -45,8 +46,8 @@ const MessagesHeader = ({ handleSearchChange, searchLoading }) => {
       {/* Channel Title */}
       <Header as="h2" floated="left" style={{ marginBottom: "0" }}>
         <span>
-          {name ? `# ${name}` : "#"}
-          <Icon name="star outline" color="black" />
+          {name ? `${isPrivateChannel ? "@" : "#"} ${name}` : "#"}
+          {!isPrivateChannel && <Icon name="star outline" color="black" />}
         </span>
         <HeaderSubHeader>{`${countUniqueUsers(loadedMessages)} user${
           countUniqueUsers(loadedMessages) === 1 ? "" : "s"

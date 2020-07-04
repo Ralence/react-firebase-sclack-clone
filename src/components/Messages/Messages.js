@@ -9,7 +9,9 @@ import { setCurrentMessages, setLoadingMsgs, setSearchMsgTerm } from "../../stor
 
 const Messages = () => {
   const user = useSelector((state) => state.auth.user);
-  const { currentChannel, currentMessages, loading } = useSelector((state) => state.messages);
+  const { currentChannel, currentMessages, loading, isPrivateChannel } = useSelector(
+    (state) => state.messages
+  );
   const searchTerm = useSelector((state) => state.messages.messageSearchTerm);
 
   const [searchLoading, setSearchLoading] = useState(false);
@@ -37,10 +39,14 @@ const Messages = () => {
 
   useEffect(() => {
     const messagesRef = firebase.database().ref("messages");
+    const privateMessagesRef = firebase.database().ref("privateMessages");
+
+    const messagesRefSwitch = isPrivateChannel ? privateMessagesRef : messagesRef;
+
     dispatch(setCurrentMessages([]));
     if (currentChannel && user) {
       const loadedMessages = [];
-      messagesRef.child(currentChannel.id).on("child_added", (snap) => {
+      messagesRefSwitch.child(currentChannel.id).on("child_added", (snap) => {
         dispatch(setLoadingMsgs(true));
         loadedMessages.push(snap.val());
         // console.log(loadedMessages);

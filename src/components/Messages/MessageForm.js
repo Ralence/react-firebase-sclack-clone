@@ -15,7 +15,9 @@ const MessageForm = () => {
 
   const storageRef = firebase.storage().ref();
 
-  const { currentChannel, error, loading } = useSelector((state) => state.messages);
+  const { currentChannel, error, loading, isPrivateChannel } = useSelector(
+    (state) => state.messages
+  );
   const { user } = useSelector((state) => state.auth);
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
@@ -73,11 +75,19 @@ const MessageForm = () => {
       });
   };
 
+  const getPath = () => {
+    if (isPrivateChannel) {
+      return `chat/private-${currentChannel.id}`;
+    } else {
+      return "chat/public";
+    }
+  };
+
   const uploadFile = (file, metadata) => {
     const pathToUpload = currentChannel.id;
     let uploadTask = null;
 
-    const filePath = `chat/public/${uuidv4()}.jpeg`;
+    const filePath = `${getPath()}/${uuidv4()}.jpeg`;
 
     setUploadState("uploading");
     uploadTask = storageRef.child(filePath).put(file, metadata);
